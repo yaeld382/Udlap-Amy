@@ -1,0 +1,16 @@
+{
+  "name": "UDLAP e-waste",
+  "short_name": "e-waste",
+  "description": "Ubica puntos de acopio, conoce la toxicidad de los componentes y calcula tu impacto ambiental.",
+  "lang": "es",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f1f6f1",
+  "theme_color": "#1f5a37",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
