@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>UDLAP e-waste</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f5a37">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<style>
+:root{--bg:#f1f6f1;--card:#fff;--ink:#14281c;--mute:#5d7365;--line:#dbe6dd;--g:#1f5a37;--g2:#e3efe5;--hi:#b3261e;--hib:#fbe6e4;--me:#8a5a00;--meb:#fdf0d5;--lo:#1f5a37;--lob:#e3efe5;--map:#e7efe7;--blk:#d3e0d5;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1a13;--card:#17261d;--ink:#e6f1e8;--mute:#93ab9a;--line:#26392d;--g:#4fb37c;--g2:#1d3426;--hi:#ff8a80;--hib:#3a1f1d;--me:#f2c14e;--meb:#382d12;--lo:#7fd6a2;--lob:#1d3426;--map:#16251c;--blk:#21352a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1a13;--card:#17261d;--ink:#e6f1e8;--mute:#93ab9a;--line:#26392d;--g:#4fb37c;--g2:#1d3426;--hi:#ff8a80;--hib:#3a1f1d;--me:#f2c14e;--meb:#382d12;--lo:#7fd6a2;--lob:#1d3426;--map:#16251c;--blk:#21352a;color-scheme:dark}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:16px/1.45 "Trebuchet MS","Segoe UI",system-ui,sans-serif;display:flex;flex-direction:column;max-width:520px;margin-inline:auto}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:10}
+header{padding:14px 20px 4px;font-size:13px;color:var(--mute)}
+header b{color:var(--ink)}
+main{flex:1;overflow-y:auto;padding:4px 20px 20px}
+h1{font:700 28px/1.15 Georgia,"Times New Roman",serif;margin:8px 0 4px;letter-spacing:-.01em}
+h2{font:700 17px Georgia,serif;margin:22px 0 10px}
+p.s{color:var(--mute);margin:0 0 14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px}
+.hero{background:var(--g);color:#fff;border-radius:20px;padding:20px;margin:14px 0}
+.hero h2{color:#fff;font-size:24px;margin:0 0 6px}
+.hero p{margin:0 0 14px;opacity:.9}
+:root[data-theme="dark"] .hero,:root:not([data-theme="light"]) .hero{--hc:#0e1a13}
+button{font:inherit;cursor:pointer}
+.btn{background:#fff;color:#1f5a37;border:0;border-radius:999px;padding:10px 18px;font-weight:700}
+.btn.p{background:var(--g);color:#fff;width:100%;border-radius:12px;padding:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.num{font:700 30px Georgia,serif}
+.lab{font-size:13px;color:var(--mute)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:10px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;white-space:nowrap}
+.chip[aria-pressed="true"]{background:var(--g);color:#fff;border-color:var(--g)}
+.item{display:flex;gap:12px;align-items:center;width:100%;text-align:left;margin-bottom:10px;color:var(--ink)}
+.item .t{flex:1}.item small{color:var(--mute);display:block}
+.tag{font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px}
+.Alto{background:var(--hib);color:var(--hi)}.Medio{background:var(--meb);color:var(--me)}.Bajo{background:var(--lob);color:var(--lo)}
+.det{margin-top:10px;display:none;font-size:14px;border-top:1px solid var(--line);padding-top:10px}
+.open .det{display:block}
+svg.map{width:100%;border-radius:16px;background:var(--map);border:1px solid var(--line)}
+svg .b{fill:var(--blk)}
+svg .pin{cursor:pointer}
+svg .pin circle{fill:var(--g);stroke:#fff;stroke-width:3}
+svg .pin.on circle{fill:var(--hi)}
+svg text{font:11px "Trebuchet MS",sans-serif;fill:var(--mute)}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0 16px}
+.seg button{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:10px}
+.seg button[aria-pressed="true"]{background:var(--g);color:#fff;border-color:var(--g)}
+input[type=range]{width:100%;accent-color:var(--g)}
+.big{background:var(--g);color:#fff;border-radius:20px;padding:20px;margin:14px 0}
+.big .num{font-size:48px}
+.note{font-size:12px;color:var(--mute);margin-top:12px}
+nav{display:flex;border-top:1px solid var(--line);background:var(--card);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;background:none;border:0;padding:10px 0 8px;color:var(--mute);font-size:12px}
+nav button span{display:block;font-size:20px}
+nav button[aria-current="page"]{color:var(--g);font-weight:700}
+button:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+</style>
+</head>
+<body>
+<header><b>UDLAP</b> / e-waste</header>
+<main id="v"></main>
+<nav id="n"></nav>
+<script>
+var PUNTOS=[
+{id:"he",n:"Edificio HE",x:230,y:70,a:["Pilas y baterías","Celulares","Accesorios"],u:"Planta baja, junto a la entrada principal"},
+{id:"bib",n:"Biblioteca",x:90,y:150,a:["Cables y cargadores","Memorias USB","Teclados y ratones"],u:"Mostrador de servicios"},
+{id:"cc",n:"Centro de cómputo",x:240,y:190,a:["Tarjetas electrónicas","Laptops y tablets","Monitores pequeños"],u:"Recepción"}
+];
+var COMP=[
+{n:"Baterías de litio",r:"Alto",d:"Riesgo de incendio o explosión si se perforan o se aplastan.",c:"Cúbrelas los polos con cinta y no las tires a la basura común."},
+{n:"Plomo",r:"Alto",d:"Presente en soldaduras y pantallas antiguas; daña el sistema nervioso.",c:"Entrégalo siempre en un punto de acopio, nunca lo desarmes."},
+{n:"Tarjetas electrónicas",r:"Medio",d:"Contienen metales pesados y retardantes de llama.",c:"Entrégalas completas, sin quemar ni desoldar."},
+{n:"Cables y conectores",r:"Bajo",d:"Cobre y plásticos reciclables; algunos cables viejos llevan PVC.",c:"Agrúpalos y entrégalos en el punto más cercano."}
+];
+var F=20,BASE=128,LS="udlap-ewaste-kg";
+var S={t:"inicio",sel:"he",f:"Todos",kg:5,mine:0};
+try{S.mine=parseFloat(localStorage.getItem(LS))||0}catch(e){}
+var TABS=[["inicio","⌂","Inicio"],["acopio","⌖","Acopio"],["toxicidad","⚠","Toxicidad"],["huella","♻","Mi huella"]];
+var $=function(i){return document.getElementById(i)};
+function fmt(x){return Math.round(x).toLocaleString("es-MX")}
+function go(t){S.t=t;location.hash=t;draw()}
+function inicio(){
+var tot=BASE+S.mine;
+return '<h1>Hola, comunidad.</h1><p class="s">Pequeñas acciones, un campus más verde.</p>'+
+'<div class="hero"><h2>Tu tecnología tiene otra vida.</h2><p>El cambio empieza con un punto de acopio.</p><button class="btn" onclick="go(\'acopio\')">Encontrar un punto</button></div>'+
+'<h2>Nuestro impacto</h2><div class="row"><div class="card"><div class="num">'+fmt(tot)+' kg</div><div class="lab">Residuos recuperados</div></div><div class="card"><div class="num">'+fmt(tot*F)+' L</div><div class="lab">Agua ahorrada</div></div></div>'+
+'<h2>Empieza por aquí</h2><div class="row" style="grid-template-columns:repeat(3,1fr)">'+
+TABS.slice(1).map(function(t){return '<button class="card" onclick="go(\''+t[0]+'\')"><span style="font-size:22px">'+t[1]+'</span><div class="lab" style="color:var(--ink)">'+t[2]+'</div></button>'}).join("")+'</div>'+
+'<p class="note">*Equivalencia ilustrativa; los puntos y cifras son de ejemplo hasta confirmarlos con la universidad.</p>'}
+function acopio(){
+var p=PUNTOS.filter(function(x){return x.id==S.sel})[0];
+var svg='<svg class="map" viewBox="0 0 320 250" role="img" aria-label="Mapa esquemático del campus">'+
+'<rect class="b" x="14" y="14" width="90" height="60" rx="8"/><rect class="b" x="120" y="14" width="80" height="40" rx="8"/><rect class="b" x="216" y="14" width="90" height="46" rx="8"/>'+
+'<rect class="b" x="14" y="96" width="60" height="70" rx="8"/><rect class="b" x="14" y="184" width="130" height="52" rx="8"/><rect class="b" x="160" y="110" width="60" height="40" rx="8"/><rect class="b" x="236" y="130" width="70" height="46" rx="8"/><rect class="b" x="170" y="170" width="136" height="68" rx="8" opacity="0"/>'+
+PUNTOS.map(function(x){return '<g class="pin'+(x.id==S.sel?' on':'')+'" tabindex="0" role="button" aria-label="'+x.n+'" onclick="S.sel=\''+x.id+'\';draw()"><circle cx="'+x.x+'" cy="'+x.y+'" r="14"/><text x="'+x.x+'" y="'+(x.y+4)+'" text-anchor="middle" style="fill:#fff;font-weight:700">♻</text><text x="'+x.x+'" y="'+(x.y+30)+'" text-anchor="middle">'+x.n+'</text></g>'}).join("")+'</svg>';
+return '<h1>Tu próximo punto.</h1><p class="s">Toca un pin para ver qué recibe.</p>'+svg+
+'<div class="card" style="margin-top:14px"><h2 style="margin:0 0 4px">'+p.n+'</h2><div class="lab">'+p.u+'</div><p style="margin:10px 0 6px"><b>Aquí se recibe:</b></p><div style="display:flex;flex-wrap:wrap;gap:6px">'+p.a.map(function(a){return '<span class="tag Bajo">'+a+'</span>'}).join("")+'</div></div>'+
+'<p class="note">Mapa esquemático con ubicaciones de ejemplo.</p>'}
+function tox(){
+var l=COMP.filter(function(c){return S.f=="Todos"||c.r==S.f});
+return '<h1>Conoce lo que reciclas.</h1><p class="s">Identifica riesgos y recicla con cuidado.</p>'+
+'<div class="chips">'+["Todos","Alto","Medio","Bajo"].map(function(f){return '<button class="chip" aria-pressed="'+(S.f==f)+'" onclick="S.f=\''+f+'\';draw()">'+f+'</button>'}).join("")+'</div>'+
+l.map(function(c,i){return '<button class="card item" onclick="this.classList.toggle(\'open\')" style="display:block"><div style="display:flex;align-items:center;gap:12px"><div class="t"><b>'+c.n+'</b></div><span class="tag '+c.r+'">'+c.r+'</span></div><div class="det">'+c.d+'<br><br><b>Qué hacer:</b> '+c.c+'</div></button>'}).join("")+
+'<div class="card" style="background:var(--g2)"><b>Nunca los tires a la basura común.</b><div class="lab">Entrégalos en un punto de acopio.</div></div>'}
+function huella(){
+return '<h1>Cada kilo cuenta.</h1><p class="s">Descubre el impacto de tus electrónicos.</p>'+
+'<div class="card"><b>¿Cuánto vas a reciclar?</b><div class="lab">Elige un peso o ajústalo.</div><div class="seg">'+[1,5,10].map(function(k){return '<button aria-pressed="'+(S.kg==k)+'" onclick="S.kg='+k+';draw()">'+k+' kg</button>'}).join("")+'</div><input type="range" min="1" max="50" value="'+S.kg+'" aria-label="Kilos" oninput="S.kg=+this.value;upd()"><div class="lab" id="kl">'+S.kg+' kg de e-waste</div></div>'+
+'<div class="big"><div>Tu impacto positivo</div><div class="num" id="lt">'+fmt(S.kg*F)+'</div>litros de agua ahorrada*</div>'+
+'<button class="btn p" onclick="reg()">Registrar mi entrega</button>'+
+'<p class="note" id="mine">Llevas '+fmt(S.mine)+' kg registrados ('+fmt(S.mine*F)+' L).</p>'+
+'<p class="note">*Simulación: 1 kg ≈ '+F+' L. Factor ilustrativo, no es una medición oficial.</p>'}
+function upd(){$("kl").textContent=S.kg+" kg de e-waste";$("lt").textContent=fmt(S.kg*F)}
+function reg(){S.mine+=S.kg;try{localStorage.setItem(LS,S.mine)}catch(e){}$("mine").textContent="Registrado. Llevas "+fmt(S.mine)+" kg ("+fmt(S.mine*F)+" L)."}
+function draw(){
+$("v").innerHTML={inicio:inicio,acopio:acopio,toxicidad:tox,huella:huella}[S.t]();
+$("n").innerHTML=TABS.map(function(t){return '<button onclick="go(\''+t[0]+'\')"'+(S.t==t[0]?' aria-current="page"':'')+'><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("");
+$("v").scrollTop=0}
+function fromHash(){var h=location.hash.slice(1);if(["inicio","acopio","toxicidad","huella"].indexOf(h)>-1)S.t=h;draw()}
+window.addEventListener("hashchange",fromHash);fromHash();
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(e){console.warn("SW",e)})})}
+</script>
+</body>
+</html>
