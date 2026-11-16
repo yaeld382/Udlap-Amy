@@ -1,6 +1,6 @@
 # UDLAP e-waste (PWA)
 
-Archivos: index.html, manifest.json, sw.js, icons/
+Archivos: index.html, puntos.js, manifest.json, sw.js, icons/, leaflet/
 
 ## Probar en local
 python -m http.server 8000   ->  http://localhost:8000
@@ -15,3 +15,8 @@ python -m http.server 8000   ->  http://localhost:8000
 - Reemplaza PUNTOS (puntos de acopio reales) y COMP en index.html.
 - Valida el factor de impacto F (1 kg ≈ 20 L es ilustrativo).
 - Si cambias archivos, sube el número de CACHE en sw.js (v1 -> v2).
+
+## Ver los registros (Google Sheets)
+1. Crea una hoja de Google. Extensiones > Apps Script. Pega apps-script.gs.
+2. Implementar > Nueva implementación > Aplicación web. Ejecutar como: Yo. Acceso: Cualquiera. Copia la URL (/exec).
+3. Pega la URL en config.js (var API="...") y sube los archivos a GitHub.

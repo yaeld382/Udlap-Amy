@@ -9,6 +9,7 @@
 <link rel="icon" href="icons/icon-192.png">
 <link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="leaflet/leaflet.css">
 <style>
 :root{--bg:#f1f6f1;--card:#fff;--ink:#14281c;--mute:#5d7365;--line:#dbe6dd;--g:#1f5a37;--g2:#e3efe5;--hi:#b3261e;--hib:#fbe6e4;--me:#8a5a00;--meb:#fdf0d5;--lo:#1f5a37;--lob:#e3efe5;--map:#e7efe7;--blk:#d3e0d5;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);color-scheme:light}
@@ -62,18 +63,17 @@ nav button{flex:1;background:none;border:0;padding:10px 0 8px;color:var(--mute);
 nav button span{display:block;font-size:20px}
 nav button[aria-current="page"]{color:var(--g);font-weight:700}
 button:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+#map{height:320px;border-radius:16px;border:1px solid var(--line);margin-bottom:14px;position:relative;z-index:0}.leaflet-container{font:inherit}.pn{width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;border:3px solid #fff;box-shadow:0 2px 6px #0006;font-size:16px}.pn.on{background:#b3261e}.me{width:16px;height:16px;border-radius:50%;background:#1a73e8;border:3px solid #fff;box-shadow:0 0 0 6px #1a73e855}a.btn{display:block;text-align:center;text-decoration:none}
 </style>
 </head>
 <body>
 <header><b>UDLAP</b> / e-waste</header>
 <main id="v"></main>
 <nav id="n"></nav>
+<script src="leaflet/leaflet.js"></script>
+<script src="config.js"></script>
+<script src="puntos.js"></script>
 <script>
-var PUNTOS=[
-{id:"he",n:"Edificio HE",x:230,y:70,a:["Pilas y baterías","Celulares","Accesorios"],u:"Planta baja, junto a la entrada principal"},
-{id:"bib",n:"Biblioteca",x:90,y:150,a:["Cables y cargadores","Memorias USB","Teclados y ratones"],u:"Mostrador de servicios"},
-{id:"cc",n:"Centro de cómputo",x:240,y:190,a:["Tarjetas electrónicas","Laptops y tablets","Monitores pequeños"],u:"Recepción"}
-];
 var COMP=[
 {n:"Baterías de litio",r:"Alto",d:"Riesgo de incendio o explosión si se perforan o se aplastan.",c:"Cúbrelas los polos con cinta y no las tires a la basura común."},
 {n:"Plomo",r:"Alto",d:"Presente en soldaduras y pantallas antiguas; daña el sistema nervioso.",c:"Entrégalo siempre en un punto de acopio, nunca lo desarmes."},
@@ -88,22 +88,13 @@ var $=function(i){return document.getElementById(i)};
 function fmt(x){return Math.round(x).toLocaleString("es-MX")}
 function go(t){S.t=t;location.hash=t;draw()}
 function inicio(){
-var tot=BASE+S.mine;
+var tot=API?(S.comm?S.comm.kg:0):BASE+S.mine;
 return '<h1>Hola, comunidad.</h1><p class="s">Pequeñas acciones, un campus más verde.</p>'+
 '<div class="hero"><h2>Tu tecnología tiene otra vida.</h2><p>El cambio empieza con un punto de acopio.</p><button class="btn" onclick="go(\'acopio\')">Encontrar un punto</button></div>'+
 '<h2>Nuestro impacto</h2><div class="row"><div class="card"><div class="num">'+fmt(tot)+' kg</div><div class="lab">Residuos recuperados</div></div><div class="card"><div class="num">'+fmt(tot*F)+' L</div><div class="lab">Agua ahorrada</div></div></div>'+
 '<h2>Empieza por aquí</h2><div class="row" style="grid-template-columns:repeat(3,1fr)">'+
 TABS.slice(1).map(function(t){return '<button class="card" onclick="go(\''+t[0]+'\')"><span style="font-size:22px">'+t[1]+'</span><div class="lab" style="color:var(--ink)">'+t[2]+'</div></button>'}).join("")+'</div>'+
 '<p class="note">*Equivalencia ilustrativa; los puntos y cifras son de ejemplo hasta confirmarlos con la universidad.</p>'}
-function acopio(){
-var p=PUNTOS.filter(function(x){return x.id==S.sel})[0];
-var svg='<svg class="map" viewBox="0 0 320 250" role="img" aria-label="Mapa esquemático del campus">'+
-'<rect class="b" x="14" y="14" width="90" height="60" rx="8"/><rect class="b" x="120" y="14" width="80" height="40" rx="8"/><rect class="b" x="216" y="14" width="90" height="46" rx="8"/>'+
-'<rect class="b" x="14" y="96" width="60" height="70" rx="8"/><rect class="b" x="14" y="184" width="130" height="52" rx="8"/><rect class="b" x="160" y="110" width="60" height="40" rx="8"/><rect class="b" x="236" y="130" width="70" height="46" rx="8"/><rect class="b" x="170" y="170" width="136" height="68" rx="8" opacity="0"/>'+
-PUNTOS.map(function(x){return '<g class="pin'+(x.id==S.sel?' on':'')+'" tabindex="0" role="button" aria-label="'+x.n+'" onclick="S.sel=\''+x.id+'\';draw()"><circle cx="'+x.x+'" cy="'+x.y+'" r="14"/><text x="'+x.x+'" y="'+(x.y+4)+'" text-anchor="middle" style="fill:#fff;font-weight:700">♻</text><text x="'+x.x+'" y="'+(x.y+30)+'" text-anchor="middle">'+x.n+'</text></g>'}).join("")+'</svg>';
-return '<h1>Tu próximo punto.</h1><p class="s">Toca un pin para ver qué recibe.</p>'+svg+
-'<div class="card" style="margin-top:14px"><h2 style="margin:0 0 4px">'+p.n+'</h2><div class="lab">'+p.u+'</div><p style="margin:10px 0 6px"><b>Aquí se recibe:</b></p><div style="display:flex;flex-wrap:wrap;gap:6px">'+p.a.map(function(a){return '<span class="tag Bajo">'+a+'</span>'}).join("")+'</div></div>'+
-'<p class="note">Mapa esquemático con ubicaciones de ejemplo.</p>'}
 function tox(){
 var l=COMP.filter(function(c){return S.f=="Todos"||c.r==S.f});
 return '<h1>Conoce lo que reciclas.</h1><p class="s">Identifica riesgos y recicla con cuidado.</p>'+
@@ -117,14 +108,52 @@ return '<h1>Cada kilo cuenta.</h1><p class="s">Descubre el impacto de tus electr
 '<button class="btn p" onclick="reg()">Registrar mi entrega</button>'+
 '<p class="note" id="mine">Llevas '+fmt(S.mine)+' kg registrados ('+fmt(S.mine*F)+' L).</p>'+
 '<p class="note">*Simulación: 1 kg ≈ '+F+' L. Factor ilustrativo, no es una medición oficial.</p>'}
-function upd(){$("kl").textContent=S.kg+" kg de e-waste";$("lt").textContent=fmt(S.kg*F)}
-function reg(){S.mine+=S.kg;try{localStorage.setItem(LS,S.mine)}catch(e){}$("mine").textContent="Registrado. Llevas "+fmt(S.mine)+" kg ("+fmt(S.mine*F)+" L)."}
+var MAP=null,POS=null;S.res="Todos";S.ed=false;S.msg="";S.nv=true;S.view=null;
+function dist(a,b){var R=6371000,r=Math.PI/180,x=(b[0]-a[0])*r,y=(b[1]-a[1])*r,h=Math.sin(x/2)*Math.sin(x/2)+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(y/2)*Math.sin(y/2);return 2*R*Math.asin(Math.sqrt(h))}
+function fd(m){return m<1000?Math.round(m)+" m":(m/1000).toFixed(1)+" km"}
+function pt(id){return PUNTOS.filter(function(p){return p.id==id})[0]}
+function tipos(){var t=["Todos"];PUNTOS.forEach(function(p){p.a.forEach(function(a){if(t.indexOf(a)<0)t.push(a)})});return t}
+function vis(){var l=PUNTOS.filter(function(p){return S.res=="Todos"||p.a.indexOf(S.res)>-1});if(POS)l.sort(function(a,b){return dist(POS,[a.lat,a.lng])-dist(POS,[b.lat,b.lng])});return l}
+function dd(p){if(!POS)return "";var m=dist(POS,[p.lat,p.lng]);return fd(m)+" · "+Math.max(1,Math.round(m/80))+" min a pie"}
+function sel(id){S.sel=id;S.nv=true;S.view=null;draw()}
+function res(r){S.res=r;S.nv=true;S.view=null;draw()}
+function loc(){if(!navigator.geolocation){S.msg="Tu navegador no permite ubicación.";return draw()}S.msg="Buscando tu ubicación…";draw();navigator.geolocation.getCurrentPosition(function(g){POS=[g.coords.latitude,g.coords.longitude];S.msg="";var l=vis();if(l.length)S.sel=l[0].id;S.nv=true;S.view=null;draw()},function(){S.msg="No pudimos obtener tu ubicación. Activa el permiso de ubicación del navegador.";draw()},{enableHighAccuracy:true,timeout:12000})}
+function ed(){S.ed=!S.ed;draw()}
+function cp(){var t="var PUNTOS="+JSON.stringify(PUNTOS,null,1)+";";(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){S.msg="Copiado. Pégalo en puntos.js y súbelo a GitHub."},function(){prompt("Copia este texto:",t)}).then(draw)}
+function acopio(){
+var l=vis(),p=pt(S.sel);if(!p||l.indexOf(p)<0)p=l[0]||PUNTOS[0];S.sel=p.id;
+return '<h1>Tu próximo punto.</h1><p class="s">Mapa real del campus UDLAP.</p>'+
+'<div class="chips">'+tipos().map(function(t){return '<button class="chip" aria-pressed="'+(S.res==t)+'" onclick="res(\''+t+'\')">'+t+'</button>'}).join("")+'</div>'+
+'<button class="btn p" style="margin-bottom:10px" onclick="loc()">◎ Usar mi ubicación</button>'+(S.msg?'<p class="note" style="margin:0 0 10px">'+S.msg+'</p>':'')+
+'<div id="map"></div>'+
+'<div class="card"><h2 style="margin:0 0 2px">'+p.n+'</h2><div class="lab">'+p.u+(dd(p)?' · '+dd(p):'')+'</div>'+(p.prop?'<div class="tag Medio" style="display:inline-block;margin-top:8px">Ubicación por confirmar</div>':'')+
+'<p style="margin:10px 0 6px"><b>Aquí se recibe:</b></p><div style="display:flex;flex-wrap:wrap;gap:6px">'+p.a.map(function(a){return '<span class="tag Bajo">'+a+'</span>'}).join("")+'</div>'+
+'<a class="btn p" style="margin-top:14px" target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+p.lat+','+p.lng+'&travelmode=walking">Cómo llegar</a></div>'+
+'<h2>Todos los puntos</h2>'+l.map(function(q){return '<button class="card item" onclick="sel(\''+q.id+'\')"><div class="t"><b>'+q.n+'</b><small>'+(dd(q)||q.u)+'</small></div></button>'}).join("")+
+'<button class="chip" style="margin-top:6px" onclick="ed()">'+(S.ed?'Salir del editor':'Editar ubicaciones')+'</button>'+
+(S.ed?'<p class="note">Arrastra los pines para corregirlos. Toca el mapa para agregar un punto.</p><button class="btn p" onclick="cp()">Copiar puntos.js</button>':'')}
+function initMap(){
+var l=vis(),p=pt(S.sel);MAP=L.map("map");
+if(S.view)MAP.setView(S.view[0],S.view[1]);else MAP.setView([p.lat,p.lng],17);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"}).addTo(MAP);
+l.forEach(function(q){var m=L.marker([q.lat,q.lng],{draggable:S.ed,icon:L.divIcon({className:"",html:'<div class="pn'+(q.id==S.sel?' on':'')+'">♻</div>',iconSize:[34,34],iconAnchor:[17,17]})}).addTo(MAP);
+m.on("click",function(){sel(q.id)});m.on("dragend",function(e){var c=e.target.getLatLng();q.lat=+c.lat.toFixed(6);q.lng=+c.lng.toFixed(6)})});
+if(POS)L.marker(POS,{icon:L.divIcon({className:"",html:'<div class="me"></div>',iconSize:[16,16]}),interactive:false}).addTo(MAP);
+if(S.ed)MAP.on("click",function(e){var n=prompt("Nombre del nuevo punto");if(!n)return;var q={id:"p"+Date.now(),n:n,lat:+e.latlng.lat.toFixed(6),lng:+e.latlng.lng.toFixed(6),a:["Pilas y baterías"],u:"Por definir",prop:true};PUNTOS.push(q);S.sel=q.id;S.nv=false;draw()})}
 function draw(){
+if(MAP){if(!S.nv)S.view=[MAP.getCenter(),MAP.getZoom()];S.nv=false;MAP.remove();MAP=null}
 $("v").innerHTML={inicio:inicio,acopio:acopio,toxicidad:tox,huella:huella}[S.t]();
 $("n").innerHTML=TABS.map(function(t){return '<button onclick="go(\''+t[0]+'\')"'+(S.t==t[0]?' aria-current="page"':'')+'><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("");
-$("v").scrollTop=0}
+if(S.t=="acopio")initMap();else $("v").scrollTop=0}
+function upd(){$("kl").textContent=S.kg+" kg de e-waste";$("lt").textContent=fmt(S.kg*F)}
+function did(){try{var i=localStorage.getItem("udlap-id");if(!i){i=Math.random().toString(36).slice(2,10);localStorage.setItem("udlap-id",i)}return i}catch(e){return "na"}}
+function qg(){try{return JSON.parse(localStorage.getItem("udlap-q")||"[]")}catch(e){return []}}
+function qs(a){try{localStorage.setItem("udlap-q",JSON.stringify(a))}catch(e){}}
+function flush(){if(!API)return;var a=qg();if(!a.length)return;qs([]);a.forEach(function(r){fetch(API,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain"},body:JSON.stringify(r)}).catch(function(){qs(qg().concat([r]))})})}
+function loadComm(){if(!API)return;fetch(API).then(function(r){return r.json()}).then(function(d){S.comm=d;if(S.t=="inicio")draw()}).catch(function(){})}
+function reg(){S.mine+=S.kg;try{localStorage.setItem(LS,S.mine)}catch(e){}var p=pt(S.sel);qs(qg().concat([{kg:S.kg,punto:p?p.n:"",id:did()}]));flush();$("mine").textContent=(API?"Registrado y enviado. ":"Registrado en tu teléfono. ")+"Llevas "+fmt(S.mine)+" kg ("+fmt(S.mine*F)+" L).";setTimeout(loadComm,2500)}
 function fromHash(){var h=location.hash.slice(1);if(["inicio","acopio","toxicidad","huella"].indexOf(h)>-1)S.t=h;draw()}
-window.addEventListener("hashchange",fromHash);fromHash();
+window.addEventListener("hashchange",fromHash);fromHash();flush();loadComm();
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(e){console.warn("SW",e)})})}
 </script>
 </body>
